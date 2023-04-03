@@ -3,6 +3,22 @@ from rest_framework.response import Response
 from rest_framework import status
 from profiles_api import serializers
 from rest_framework import viewsets
+from rest_framework.authentication import TokenAuthentication
+from profiles_api import permissions
+from profiles_api import models
+from rest_framework import filters
+
+
+class UserProfileViewset(viewsets.ModelViewSet):
+    """Handle creating and updating profiles"""
+    serializer_class=serializers.UserProfileSeriazer
+    queryset=models.UserProfile.objects.all()
+    authentication_classes=(TokenAuthentication,)
+    permission_classes=(permissions.UpdateOwnProfile,)
+    filter_backends=(filters.SearchFilter,)
+    search_fields=('name','email',)
+
+
 
 '''
 class HelloApiView(APIView):
@@ -83,12 +99,3 @@ class HelloViewSet(viewsets.ViewSet):
         return Response({'http_method':'GET'})
 
 '''
-
-from profiles_api import models
-
-
-class UserProfileViewset(viewsets.ModelViewSet):
-    """Handle creating and updating profiles"""
-    serializer_class=serializers.UserProfileSeriazer
-    queryset=models.UserProfile.objects.all()
-    
